@@ -42,3 +42,17 @@ yarn-error.log*
 next-env.d.ts
 node_modules/
 node_modules/
+
+venv/
+
+*.pyc
+__pycache__/
+*.log
+.DS_Store
+.env
+venv/
+node_modules/
+*.pem
+.aws/
+credentials
+sample_data/*.csv
