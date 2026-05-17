@@ -1,0 +1,40 @@
+# Plan B — Local backup demo (Docker + PySpark)
+# Use this if the AWS Academy lab is unavailable on presentation day.
+#
+# Usage:
+#   docker compose -f orchestration/docker-compose-local.yml up -d
+#   docker compose -f orchestration/docker-compose-local.yml exec spark bash
+#   python3 pipeline/local_pipeline.py --input data_samples/ --output /tmp/output/
+#   docker compose -f orchestration/docker-compose-local.yml down
+
+services:
+  spark:
+    image: bitnami/spark:3.5
+    container_name: dt_local_spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+    volumes:
+      - ..:/workspace          # mount full project
+      - /tmp/pipeline-output:/tmp/output
+    working_dir: /workspace
+    ports:
+      - "4040:4040"            # Spark UI
+    command: >
+      bash -c "
+        pip install pandas pyarrow duckdb pandera --quiet &&
+        echo '✅ Dependencies ready. Run: python3 pipeline/local_pipeline.py --input data_samples/ --output /tmp/output/' &&
+        tail -f /dev/null
+      "
+
+  # Optional: Jupyter for interactive exploration
+  notebook:
+    image: jupyter/pyspark-notebook:spark-3.5.0
+    container_name: dt_local_notebook
+    volumes:
+      - ..:/home/jovyan/work
+    ports:
+      - "8888:8888"
+    profiles:
+      - notebook                # only starts with: docker compose --profile notebook up

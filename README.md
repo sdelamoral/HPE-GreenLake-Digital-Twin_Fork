@@ -99,3 +99,64 @@ Métricas de entrada: `engine_temp · oil_pressure · fuel_level · battery_volt
 ---
 
 *Made with love by mazapan de nuez*
+
+---
+
+## Data Engineering Capstone — AWS Academy (Path B)
+
+This project is also the dataset and platform for an **AWS Data Engineering Capstone (Path B)**. We extract three Supabase tables with different schemas (`telemetry_readings`, `incidents`, `anomalies`) and build a complete end-to-end pipeline on AWS demonstrating 7 mandatory concepts.
+
+### Team & Roles
+
+| Member | Role | Folder |
+|--------|------|--------|
+| [Nombre 1] | Role 1 — Data Engineer | `pipeline/` |
+| [Nombre 2] | Role 2 — Data Quality Engineer | `data_quality/` |
+| [Nombre 3] | Role 3 — Analytics Engineer | `analytics/` |
+| [Nombre 4] | Role 4 — Orchestration & Ops | `orchestration/` |
+
+### Repository Structure
+
+```
+HPE-GreenLake-Digital-Twin_Fork/
+├── README.md                     # This file
+├── docs/
+│   ├── proposal.md               # Path B proposal (7 concepts mapped)
+│   ├── technical_decisions.md    # Architecture Decision Records (ADRs)
+│   ├── architecture.png          # Full pipeline diagram (export from orchestration/architecture.md)
+│   └── Feature-*.md              # Original project feature docs
+├── pipeline/                     # Role 1: ingestion + Glue ETL
+├── data_quality/                 # Role 2: DQ rules + report
+├── analytics/                    # Role 3: Athena views + benchmark + QuickSight
+├── orchestration/                # Role 4: run_pipeline.sh + security + architecture
+├── data_samples/                 # Small CSV samples only (max 100 rows)
+├── presentation/                 # slides.pdf
+└── src/                          # Next.js frontend (original project)
+```
+
+### How to Run the Pipeline
+
+```bash
+# Full pipeline (requires active AWS Academy lab)
+./orchestration/run_pipeline.sh
+
+# Dry-run (no AWS calls)
+./orchestration/run_pipeline.sh --dry-run
+
+# Single stage
+./orchestration/run_pipeline.sh --stage ingest
+```
+
+See [orchestration/README.md](orchestration/README.md) for full documentation.
+
+### The 7 Mandatory Concepts
+
+| # | Concept | Implementation |
+|---|---------|---------------|
+| 1 | Data Lake on S3 | `raw/` → `processed/` → `curated/` zones |
+| 2 | Schema-on-read | Glue Crawler + Athena (`digital_twin_db`) |
+| 3 | Physical optimization | Parquet + Snappy · partitioned by `year/vehicle_type` |
+| 4 | Data quality | 10 rules (Glue DQ) · executable JSON report |
+| 5 | Orchestration | `orchestration/run_pipeline.sh` (bash + AWS CLI) |
+| 6 | Visualization | QuickSight: 4 dashboards (health, hotspot, anomaly trend, response time) |
+| 7 | Security | LabRole · restricted bucket policy · no credentials in repo |
